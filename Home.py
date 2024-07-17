@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config("College.ai", page_icon='src/Logo College.png', layout='centered')
+st.set_page_config("Murali", page_icon='src/Logo College.png', layout='centered')
 st.markdown('<style>' + open('./src/style.css').read() + '</style>', unsafe_allow_html=True)
 
 from streamlit_lottie import st_lottie 
@@ -8,12 +8,18 @@ from st_on_hover_tabs import on_hover_tabs
 import json
 
 from menu.Ask_To_PDF import main as ask_to_pdf_page
-from menu.User import main as user_page
-
 
 def home():
-    st.markdown("<h1 style='text-align: center;'>Ask To PDF</h1>", unsafe_allow_html=True)
+    st.markdown("""
+    <h1 style='text-align: center;'>
+        <a href='https://github.com/VIZAGBOYS/askme' style='text-decoration: none; color: inherit;'>
+            Ask To PDF
+        </a>
+    </h1>
+    """, unsafe_allow_html=True)
+
     st.markdown("<h4 style='text-align: center;'></h4>", unsafe_allow_html=True)
+    
 
     try:
         with open('src/Home_student.json', encoding='utf-8') as anim_source:
