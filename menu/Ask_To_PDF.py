@@ -41,14 +41,14 @@ def get_text_chunks(text):
     return chunks
 
 def get_vector_store(text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
     faiss.write_index(vector_store.index, "faiss_index.bin")
     with open("faiss_store.pkl", "wb") as f:
         pickle.dump({"docstore": vector_store.docstore, "index_to_docstore_id": vector_store.index_to_docstore_id}, f)
 
 def load_vector_store():
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
     index = faiss.read_index("faiss_index.bin")
     with open("faiss_store.pkl", "rb") as f:
         store_data = pickle.load(f)
@@ -96,8 +96,6 @@ def user_input(user_question):
     st.write("Reply: ", st.session_state.output_text)
 
 def main():
-    # st.set_page_config("College.ai", page_icon='🔍', layout='centered')
-   
     st.write("<h1><center>Ask me</center></h1>", unsafe_allow_html=True)
     st.write("")
     with open('src/Robot.json', encoding='utf-8') as anim_source:
