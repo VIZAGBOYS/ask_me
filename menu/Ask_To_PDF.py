@@ -20,8 +20,6 @@ load_dotenv()
 os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
-# Configure the Google Generative AI with the API key
-genai.configure(api_key=api_key)
 
 def get_pdf_text(pdf_docs):
     text = ""
