@@ -25,12 +25,18 @@ def get_pdf_text(pdf_docs):
     for pdf in pdf_docs:
         pdf_reader = PdfReader(pdf)
         for page in pdf_reader.pages:
-            text += page.extract_text()
+            page_text = page.extract_text()
+            if page_text:
+                text += page_text
+            else:
+                print("Warning: Empty page encountered")
+    print(f"Extracted Text (first 500 characters): {text[:500]}")
     return text
 
 def get_text_chunks(text):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     chunks = text_splitter.split_text(text)
+    print(f"Text Chunks: {chunks}")  # Print the chunks to debug
     return chunks
 
 def get_vector_store(text_chunks):
@@ -127,9 +133,17 @@ def main():
         if pdf_docs:
             with st.spinner("🤖Processing..."):
                 raw_text = get_pdf_text(pdf_docs)
+                if raw_text.strip() == "":
+                    st.error("No text found in the PDF files.")
+                    return
                 text_chunks = get_text_chunks(raw_text)
+                if not text_chunks:
+                    st.error("No text chunks created from the PDF text.")
+                    return
                 get_vector_store(text_chunks)
                 st.success("Done, AI is trained")
+        else:
+            st.error("No PDF files uploaded.")
 
     user_question = st.text_input("Ask a Question from the PDF Files")
     enter_button = st.button('Enter')
