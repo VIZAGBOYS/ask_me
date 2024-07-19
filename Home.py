@@ -1,6 +1,6 @@
 import streamlit as st
 
-st.set_page_config("Murali", page_icon='src/Logo College.png', layout='centered')
+st.set_page_config("ASK_ME", page_icon='src/Logo College.png', layout='centered')
 st.markdown('<style>' + open('./src/style.css').read() + '</style>', unsafe_allow_html=True)
 
 from streamlit_lottie import st_lottie 
