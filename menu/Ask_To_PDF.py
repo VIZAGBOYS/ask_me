@@ -15,10 +15,14 @@ import faiss
 import pickle
 import asyncio
 
+# Load environment variables
 load_dotenv()
 
-os.getenv("GOOGLE_API_KEY")
-genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
+# Fetch the API key from environment variable
+api_key = os.getenv("GOOGLE_API_KEY")
+
+# Configure the Google Generative AI with the API key
+genai.configure(api_key=api_key)
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -118,8 +122,6 @@ def main():
                 text_chunks = get_text_chunks(raw_text)
                 get_vector_store(text_chunks)
                 st.success("Train ipoindhi bro")
-
-    
 
     user_question = st.text_input("Ask a Question")
     enter_button = st.button('Enter')
