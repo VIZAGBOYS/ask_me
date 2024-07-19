@@ -9,7 +9,7 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
-from streamlit_lottie import st_lottie 
+from streamlit_lottie import st_lottie
 import json
 import faiss
 import pickle
@@ -19,7 +19,6 @@ load_dotenv()
 
 os.getenv("GOOGLE_API_KEY")
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
-
 
 def get_pdf_text(pdf_docs):
     text = ""
@@ -35,14 +34,28 @@ def get_text_chunks(text):
     return chunks
 
 def get_vector_store(text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
-    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
+    if not text_chunks:
+        raise ValueError("No text chunks available for vector store creation.")
+    
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    
+    # Print a sample chunk and embedding to debug
+    print(f"Sample Text Chunk: {text_chunks[0]}")
+    sample_embedding = embeddings.embed_query(text_chunks[0])
+    print(f"Sample Embedding: {sample_embedding}")
+
+    try:
+        vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
+    except Exception as e:
+        print(f"Error creating FAISS vector store: {e}")
+        raise
+
     faiss.write_index(vector_store.index, "faiss_index.bin")
     with open("faiss_store.pkl", "wb") as f:
         pickle.dump({"docstore": vector_store.docstore, "index_to_docstore_id": vector_store.index_to_docstore_id}, f)
 
 def load_vector_store():
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
     index = faiss.read_index("faiss_index.bin")
     with open("faiss_store.pkl", "rb") as f:
         store_data = pickle.load(f)
@@ -59,7 +72,7 @@ async def get_conversational_chain():
     5. If information not found then search on google and then provide reply.
     6. (but then mention the reference name)
     7. If 'Summarize' word is used in input then Summarize the context.
-    8. If input is: 'Hello', reply: Hey hi team vikings welcomes you.\n\n
+    8. If input is: 'Hello', reply: Hey hi Suraj.\n\n
     9. Use Markdown font to make text more readable
     
     Context:\n {context}?\n
@@ -90,8 +103,7 @@ def user_input(user_question):
     st.write("Reply: ", st.session_state.output_text)
 
 def main():
-    
-    st.write("<h1><center>Ask me</center></h1>", unsafe_allow_html=True)
+    st.write("<h1><center>One-Click Conversions</center></h1>", unsafe_allow_html=True)
     st.write("")
     with open('src/Robot.json', encoding='utf-8') as anim_source:
         animation = json.load(anim_source)
@@ -111,15 +123,15 @@ def main():
 
     pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True)
 
-    if st.button("Train cheyyu"):
+    if st.button("Train & Process"):
         if pdf_docs:
-            with st.spinner("🤖Avuthundhi..."):
+            with st.spinner("🤖Processing..."):
                 raw_text = get_pdf_text(pdf_docs)
                 text_chunks = get_text_chunks(raw_text)
                 get_vector_store(text_chunks)
-                st.success("Train ipoindhi bro")
+                st.success("Done, AI is trained")
 
-    user_question = st.text_input("Ask a Question")
+    user_question = st.text_input("Ask a Question from the PDF Files")
     enter_button = st.button('Enter')
 
     if enter_button or st.session_state.prompt_selected:
