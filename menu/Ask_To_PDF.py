@@ -15,15 +15,10 @@ import faiss
 import pickle
 import asyncio
 
-def configure():
-    load_dotenv()
+load_dotenv()
 
-
-# Fetch the API key from environment variable
-api_key = os.getenv("GOOGLE_API_KEY")
-
-if not api_key:
-    raise ValueError("Google API key not found. Make sure the environment variable GOOGLE_API_KEY is set.")
+os.getenv("GOOGLE_API_KEY")
+genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 # Configure the Google Generative AI with the API key
 genai.configure(api_key=api_key)
@@ -97,7 +92,6 @@ def user_input(user_question):
     st.write("Reply: ", st.session_state.output_text)
 
 def main():
-
     configure()
     st.write("<h1><center>Ask me</center></h1>", unsafe_allow_html=True)
     st.write("")
