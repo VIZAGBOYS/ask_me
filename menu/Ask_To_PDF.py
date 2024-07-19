@@ -15,9 +15,6 @@ import faiss
 import pickle
 import asyncio
 
-# Load environment variables
-load_dotenv()
-
 # Fetch the API key from environment variable
 api_key = os.getenv("GOOGLE_API_KEY")
 
