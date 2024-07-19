@@ -15,6 +15,10 @@ import faiss
 import pickle
 import asyncio
 
+def configure():
+    load_dotenv()
+
+
 # Fetch the API key from environment variable
 api_key = os.getenv("GOOGLE_API_KEY")
 
@@ -93,6 +97,8 @@ def user_input(user_question):
     st.write("Reply: ", st.session_state.output_text)
 
 def main():
+
+    configure()
     st.write("<h1><center>Ask me</center></h1>", unsafe_allow_html=True)
     st.write("")
     with open('src/Robot.json', encoding='utf-8') as anim_source:
