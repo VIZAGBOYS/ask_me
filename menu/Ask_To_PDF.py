@@ -21,6 +21,9 @@ load_dotenv()
 # Fetch the API key from environment variable
 api_key = os.getenv("GOOGLE_API_KEY")
 
+if not api_key:
+    raise ValueError("Google API key not found. Make sure the environment variable GOOGLE_API_KEY is set.")
+
 # Configure the Google Generative AI with the API key
 genai.configure(api_key=api_key)
 
